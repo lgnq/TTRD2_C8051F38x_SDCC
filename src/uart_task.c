@@ -105,6 +105,11 @@ void UART2_BUF_O_Send_Char(const char);
 void UART2_BUF_O_Init(uint32_t BAUD_RATE)
 {
     //todo : init the uart
+
+    Out_written_index_g = 0;
+    Out_waiting_index_g = 0;
+    In_read_index_g     = 0;
+    In_waiting_index_g  = 0;   
 }
 
 /*----------------------------------------------------------------------------*-
