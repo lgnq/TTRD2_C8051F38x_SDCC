@@ -2,7 +2,7 @@
 
 extern void tick_handler(void);
 
-INTERRUPT (SCH_UPDATE, INTERRUPT_TIMER2)
+INTERRUPT(SCH_UPDATE, INTERRUPT_TIMER2)
 {
     //clear flag
     TF2H = 0; // Have to manually clear this flag

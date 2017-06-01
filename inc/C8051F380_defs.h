@@ -1,36 +1,35 @@
-/*-------------------------------------------------------------------------
-   C8051F380.h - Register Declarations for the SiLabs C8051F38x
-   Processor Range
+//-----------------------------------------------------------------------------
+// C8051F380_defs.h
+//-----------------------------------------------------------------------------
+// Copyright 2010, Silicon Laboratories, Inc.
+// http://www.silabs.com
+//
+// Program Description:
+//
+// Register/bit definitions for the C8051F38x family.
+// **Important Note**: The compiler_defs.h header file should be included
+// before including this header file.
+//
+// Target:         C8051F380
+// Tool chain:     Generic
+// Command Line:   None
+//
+// Release 1.0 - 10 FEB 2011 (PKC)
+//    -Updated SFR name in SMB1CN bit definitions
+//
+// Release 0.2 - 05 AUG 2010 (PKC)
+//    -Updated part number to 'F380
+//
+// Release 0.1 - 26 APR 2010 (PKC)
+//    -Initial release
+//
 
-   Copyright (C) 2007, Maarten Brock, sourceforge.brock@dse.nl
+//-----------------------------------------------------------------------------
+// Header File Preprocessor Directive
+//-----------------------------------------------------------------------------
 
-   This library is free software; you can redistribute it and/or modify it
-   under the terms of the GNU General Public License as published by the
-   Free Software Foundation; either version 2, or (at your option) any
-   later version.
-
-   This library is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this library; see the file COPYING. If not, write to the
-   Free Software Foundation, 51 Franklin Street, Fifth Floor, Boston,
-   MA 02110-1301, USA.
-
-   As a special exception, if you link this library with other files,
-   some of which are compiled with SDCC, to produce an executable,
-   this library does not by itself cause the resulting executable to
-   be covered by the GNU General Public License. This exception does
-   not however invalidate any other reasons why the executable file
-   might be covered by the GNU General Public License.
--------------------------------------------------------------------------*/
-
-#ifndef C8051F380_H
-#define C8051F380_H
-
-#include <compiler.h>
+#ifndef C8051F380_DEFS_H
+#define C8051F380_DEFS_H
 
 //-----------------------------------------------------------------------------
 // Page 0 and Page F Registers

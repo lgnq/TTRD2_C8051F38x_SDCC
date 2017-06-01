@@ -26,9 +26,10 @@
 1496302613 source:c:\users\efang01\documents\github\ttrd2_c8051f38x_sdcc\src\heartbeat_task.c
 	"main.h"
 
-1496199094 c:\users\efang01\documents\github\ttrd2_c8051f38x_sdcc\inc\main.h
-	"C8051F380.h"
+1496304853 c:\users\efang01\documents\github\ttrd2_c8051f38x_sdcc\inc\main.h
 	"typedef.h"
+	<compiler.h>
+	"C8051F380_defs.h"
 	"user.h"
 	"processor.h"
 	"scheduler.h"
@@ -77,9 +78,15 @@
 1496198293 source:c:\users\efang01\documents\github\ttrd2_c8051f38x_sdcc\src\uart_task.c
 	"main.h"
 
-1496302585 source:c:\users\efang01\documents\github\ttrd2_c8051f38x_sdcc\src\user.c
+1496304621 source:c:\users\efang01\documents\github\ttrd2_c8051f38x_sdcc\src\user.c
 	"main.h"
 
 1496195628 source:c:\users\efang01\documents\github\ttrd2_c8051f38x_sdcc\src\watchdog_task.c
 	"main.h"
+
+1495875764 c:\users\efang01\documents\github\ttrd2_c8051f38x_sdcc\inc\compiler_defs.h
+	<stdbool.h>
+	<intrinsics.h>
+
+1495875764 c:\users\efang01\documents\github\ttrd2_c8051f38x_sdcc\inc\c8051f380_defs.h
 

@@ -42,10 +42,10 @@
 #ifndef __MAIN_H__
 #define __MAIN_H__
 
-//#include <mcs51/C8051F360.h>
-#include "C8051F380.h"
-
 #include "typedef.h"
+#include <compiler.h>                  // Compiler declarations
+#include "C8051F380_defs.h"            // SFR declarations
+
 #include "user.h"
 
 // Processor module
