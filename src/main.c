@@ -44,13 +44,6 @@
 // Processor Header
 #include "main.h"
 
-__sfr __at(0xAA) _XPAGE; // EMI0CN for C8015F384
-
-void _sdcc_external_startup(void)
-{
-    PCA0MD &= ~0x40;    //disable watchdog
-}
-
 int main(void)
 {
     // Check mode, add tasks to schedule

@@ -146,3 +146,11 @@ void tasks_init(void)
     SCH_Add_Task(UART2_BUF_O_Update,     0, 1);     // UART-USB reports
     SCH_Add_Task(protocol_update,        0, 10);    // protocol task
 }
+
+//SDCC for C8051F38x
+__sfr __at(0xAA) _XPAGE; // EMI0CN for C8015F384
+
+void _sdcc_external_startup(void)
+{
+    PCA0MD &= ~0x40;    //disable watchdog
+}
