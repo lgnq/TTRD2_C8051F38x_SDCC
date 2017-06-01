@@ -1,0 +1,25 @@
+# depslib dependency file v1.0
+1496201732 source:c:\users\efang01\desktop\ttrd2_c8051f38x\ttrd2_c8051f38x\src\heartbeat_task.c
+	"main.h"
+
+1496195628 source:c:\users\efang01\desktop\ttrd2_c8051f38x\ttrd2_c8051f38x\src\key_task.c
+	"main.h"
+
+1496302358 source:c:\users\efang01\desktop\ttrd2_c8051f38x\ttrd2_c8051f38x\src\main.c
+	"main.h"
+
+1496202022 source:c:\users\efang01\desktop\ttrd2_c8051f38x\ttrd2_c8051f38x\src\processor.c
+	"main.h"
+
+1496195628 source:c:\users\efang01\desktop\ttrd2_c8051f38x\ttrd2_c8051f38x\src\scheduler.c
+	"main.h"
+
+1496198293 source:c:\users\efang01\desktop\ttrd2_c8051f38x\ttrd2_c8051f38x\src\uart_task.c
+	"main.h"
+
+1496195628 source:c:\users\efang01\desktop\ttrd2_c8051f38x\ttrd2_c8051f38x\src\watchdog_task.c
+	"main.h"
+
+1496302233 source:c:\users\efang01\desktop\ttrd2_c8051f38x\ttrd2_c8051f38x\src\user.c
+	"main.h"
+

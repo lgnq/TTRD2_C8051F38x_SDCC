@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="TTRD2_C8051F38x" />
+		<Option pch_mode="2" />
+		<Option compiler="sdcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/TTRD2_C8051F38x.ihx" prefix_auto="1" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="obj/Debug/" />
+				<Option type="5" />
+				<Option compiler="sdcc" />
+				<Compiler>
+					<Add option="--debug" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/TTRD2_C8051F38x.ihx" prefix_auto="1" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="obj/Release/" />
+				<Option type="5" />
+				<Option compiler="sdcc" />
+				<Compiler>
+					<Add option="--opt-code-size" />
+				</Compiler>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-mmcs51" />
+			<Add option="--model-large" />
+		</Compiler>
+		<Linker>
+			<Add option="--xram-size 4096" />
+			<Add option="--iram-size 256" />
+			<Add option="--code-size 65536" />
+			<Add option="--out-fmt-ihx" />
+		</Linker>
+		<ExtraCommands>
+			<Add after='cmd /c &quot;packihx &lt;$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).ihx &gt;$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).hex&quot;' />
+		</ExtraCommands>
+		<Unit filename="inc/C8051F380.h" />
+		<Unit filename="inc/heartbeat_task.h" />
+		<Unit filename="inc/key_task.h" />
+		<Unit filename="inc/main.h" />
+		<Unit filename="inc/processor.h" />
+		<Unit filename="inc/scheduler.h" />
+		<Unit filename="inc/typedef.h" />
+		<Unit filename="inc/uart_task.h" />
+		<Unit filename="inc/user.h" />
+		<Unit filename="inc/watchdog_task.h" />
+		<Unit filename="src/heartbeat_task.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/key_task.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/processor.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/scheduler.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/uart_task.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/user.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/watchdog_task.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
