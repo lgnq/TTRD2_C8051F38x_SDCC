@@ -14,6 +14,7 @@
 				<Option compiler="sdcc" />
 				<Compiler>
 					<Add option="--debug" />
+					<Add directory="inc" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -24,6 +25,7 @@
 				<Option compiler="sdcc" />
 				<Compiler>
 					<Add option="--opt-code-size" />
+					<Add directory="inc" />
 				</Compiler>
 			</Target>
 		</Build>
