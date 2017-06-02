@@ -13,30 +13,30 @@
 
   This code is copyright (c) 2014-2016 SafeTTy Systems Ltd.
 
-  This code forms part of a Time-Triggered Reference Design (TTRD) that is 
-  documented in the following book: 
+  This code forms part of a Time-Triggered Reference Design (TTRD) that is
+  documented in the following book:
 
-   Pont, M.J. (2016) 
-   "The Engineering of Reliable Embedded Systems (Second Edition)", 
+   Pont, M.J. (2016)
+   "The Engineering of Reliable Embedded Systems (Second Edition)",
    Published by SafeTTy Systems Ltd. ISBN: 978-0-9930355-3-1.
 
-  Both the TTRDs and the above book ("ERES2") describe patented 
+  Both the TTRDs and the above book ("ERES2") describe patented
   technology and are subject to copyright and other restrictions.
 
-  This code may be used without charge: [i] by universities and colleges on 
-  courses for which a degree up to and including 'MSc' level (or equivalent) 
-  is awarded; [ii] for non-commercial projects carried out by individuals 
+  This code may be used without charge: [i] by universities and colleges on
+  courses for which a degree up to and including 'MSc' level (or equivalent)
+  is awarded; [ii] for non-commercial projects carried out by individuals
   and hobbyists.
 
-  Any and all other use of this code and / or the patented technology 
+  Any and all other use of this code and / or the patented technology
   described in ERES2 requires purchase of a ReliabiliTTy Technology Licence:
   http://www.safetty.net/technology/reliabilitty-technology-licences
 
-  Please contact SafeTTy Systems Ltd if you require clarification of these 
+  Please contact SafeTTy Systems Ltd if you require clarification of these
   licensing arrangements: http://www.safetty.net/contact
 
-  CorrelaTTor, DecomposiTTor, DuplicaTTor, MoniTTor, PredicTTor, ReliabiliTTy,  
-  SafeTTy, SafeTTy Systems, TriplicaTTor and WarranTTor are registered 
+  CorrelaTTor, DecomposiTTor, DuplicaTTor, MoniTTor, PredicTTor, ReliabiliTTy,
+  SafeTTy, SafeTTy Systems, TriplicaTTor and WarranTTor are registered
   trademarks or trademarks of SafeTTy Systems Ltd in the UK & other countries.
 
 -*----------------------------------------------------------------------------*/
@@ -57,7 +57,7 @@ static uint32_t Tick_count_g = 0;
 
   SCH_Init_Milliseconds()
 
-  Scheduler initialisation function.  Prepares scheduler data structures and 
+  Scheduler initialisation function.  Prepares scheduler data structures and
    sets up timer interrupts every TICKms milliseconds.
 
   You must call this function before using the scheduler.
@@ -80,7 +80,7 @@ static uint32_t Tick_count_g = 0;
      None.
 
   ERROR DETECTION / ERROR HANDLING:
-     PROCESSOR_Perform_Safe_Shutdown() is called if the requested timing 
+     PROCESSOR_Perform_Safe_Shutdown() is called if the requested timing
      requirements cannot be met.
 
   RETURN VALUE:
@@ -97,9 +97,9 @@ void SCH_Init_Milliseconds(const uint32_t TICKms)
         SCH_tasks_g[Task_id].pTask = SCH_NULL_PTR;
     }
 
-#if 0    
+#if 0
     // Using CMSIS
-      
+
     // SystemCoreClock gives the system operating frequency (in Hz)
     if (SystemCoreClock != REQUIRED_PROCESSOR_CORE_CLOCK)
     {
@@ -119,10 +119,8 @@ void SCH_Init_Milliseconds(const uint32_t TICKms)
    // all tasks have been added to the schedule.
    SysTick->CTRL &= 0xFFFFFFFC;
 #else
-//    system_clock_init(16000000);
-   
     timer_init(1);
-#endif   
+#endif
 }
 
 /*----------------------------------------------------------------------------*-
@@ -131,9 +129,9 @@ void SCH_Init_Milliseconds(const uint32_t TICKms)
 
   Starts the scheduler, by enabling SysTick interrupt.
 
-  NOTES: 
+  NOTES:
   * All tasks must be added before starting scheduler.
-  * Any other interrupts MUST be synchronised to this tick.  
+  * Any other interrupts MUST be synchronised to this tick.
 
   PARAMETERS:
      None.
@@ -157,9 +155,9 @@ void SCH_Init_Milliseconds(const uint32_t TICKms)
      None.
 
 -*----------------------------------------------------------------------------*/
-void SCH_Start(void) 
+void SCH_Start(void)
 {
-#if 0  
+#if 0
     // Enable SysTick timer
     SysTick->CTRL |= 0x01;
 
@@ -167,10 +165,10 @@ void SCH_Start(void)
     SysTick->CTRL |= 0x02;
 #else
     timer_interrupt_enable();
-    timer_start(); 
-    
+    timer_start();
+
 //    int_enable();
-#endif   
+#endif
 }
 
 /*----------------------------------------------------------------------------*-
@@ -179,7 +177,7 @@ void SCH_Start(void)
 
   [Function name determined by CMIS standard.]
 
-  This is the scheduler ISR.  It is called at a rate 
+  This is the scheduler ISR.  It is called at a rate
   determined by the timer settings in the SCH_Init() function.
 
   PARAMETERS:
@@ -248,12 +246,12 @@ void tick_handler(void)
      None.
 
 -*----------------------------------------------------------------------------*/
-void SCH_Dispatch_Tasks(void) 
+void SCH_Dispatch_Tasks(void)
 {
     uint32_t Task_id;
     uint32_t Update_required;
 
-    int_disable();  
+    int_disable();
     Update_required = (Tick_count_g > 0);  // Check tick count
     int_enable();
 
@@ -272,8 +270,8 @@ void SCH_Dispatch_Tasks(void)
                     // All tasks are periodic: schedule task to run again
                     SCH_tasks_g[Task_id].Delay = SCH_tasks_g[Task_id].Period;
                 }
-            }         
-        } 
+            }
+        }
 
         int_disable();
         Tick_count_g--;                       // Decrement the count
@@ -281,7 +279,7 @@ void SCH_Dispatch_Tasks(void)
         int_enable();
     }
 
-    // The scheduler enters idle mode at this point 
+    // The scheduler enters idle mode at this point
     sleep();
 }
 
@@ -295,22 +293,22 @@ void SCH_Dispatch_Tasks(void)
   PARAMETERS:
      pTask  : The name of the task (function) to be scheduled.
               NOTE: All scheduled functions must be 'void, void' -
-              that is, they must take no parameters, and have 
+              that is, they must take no parameters, and have
               a void return type (in this design).
-                   
+
      DELAY  : The interval (ticks) before the task is first executed.
 
      PERIOD : Task period (in ticks).  Must be > 0.
 
   LONG-TERM DATA:
      SCH_tasks_g (W)
-  
+
   MCU HARDWARE:
      None.
 
   PRE-CONDITION CHECKS:
      1. There is space in the task array.
-     2. The task is periodic ('one-shot' tasks are not supported. 
+     2. The task is periodic ('one-shot' tasks are not supported.
 
   POST-CONDITION CHECKS:
      None.
@@ -320,27 +318,27 @@ void SCH_Dispatch_Tasks(void)
      - if the task cannot be added to the schedule (array too small)
      - if an attempt is made to schedule a "one shot" task
 
-  RETURN VALUE:  
+  RETURN VALUE:
      None.
- 
+
 -*----------------------------------------------------------------------------*/
 void SCH_Add_Task(void (* pTask)(), const uint32_t DELAY, const uint32_t PERIOD)
 {
     uint32_t Task_id = 0;
-   
+
     // First find a gap in the array (if there is one)
     while ((SCH_tasks_g[Task_id].pTask != SCH_NULL_PTR) && (Task_id < SCH_MAX_TASKS))
     {
         Task_id++;
-    } 
-   
-    // Have we reached the end of the list?   
+    }
+
+    // Have we reached the end of the list?
     if (Task_id == SCH_MAX_TASKS)
     {
         // Task list is full - fatal error
         PROCESSOR_Perform_Safe_Shutdown();
     }
-      
+
     // Check for "one shot" tasks
     if (PERIOD == 0)
     {

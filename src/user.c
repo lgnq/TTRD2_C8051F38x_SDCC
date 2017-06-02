@@ -80,36 +80,8 @@ void sleep(void)
 
 void mcu_init(void)
 {
-#if 0
-    P0MDOUT = 0x03;                     // LED-R, LED-G
-    P1MDOUT = 0x00;                     //
-    P2MDOUT = 0x00;                     // LED1, 2
-    P3MDOUT = 0x00;                     //
-    P4MDOUT = 0x00;
-
-    P0SKIP = 0xCF;                      // GPIO, GPIO, TX, RX, GPIO...
-    P1SKIP = 0xFF;                      // GPIOs
-    P2SKIP = 0xFF;                      // GPIOs
-    P3SKIP = 0xFF;                      // GPIOs
-
-    XBR0 = 0x01;                        // .... ...(UART0)
-    XBR1 = 0xC0;                        // disable weak pull-up, XBAR enable, important always!!!
-    XBR2 = 0x00;                        //
-
-    EX0 = 0;        // INT0 disable
-    EX1 = 0;        // INT1 disable
-    IT0 = 1;        // Edge trigger
-    IT1 = 1;        // Edge trigger
-    IT01CF = 0x76;                      // P0.6(MPO0) as INT0, P0.7(MPO1) as INT1
-
-    LED_R = 1;
-    LED_G = 0;
-
-    P0 = 0xFF;
-#endif // 0
-
     //init system clock
-    system_clock_init(16000000);
+    system_clock_init(48000000);
 
     int_enable();
 }
