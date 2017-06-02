@@ -227,7 +227,7 @@ void PROCESSOR_Configure_Reqd_MoSt(void)
 -*----------------------------------------------------------------------------*/
 void PROCESSOR_Perform_Safe_Shutdown(void)
 {
-    uint32_t Delay1;
+    uint32_t delay;
 
     // Here we simply "fail silent" with rudimentary fault reporting.
     // OTHER BEHAVIOUR IS LIKELY TO BE REQUIRED IN YOUR DESIGN
@@ -242,7 +242,7 @@ void PROCESSOR_Perform_Safe_Shutdown(void)
     while (1)
     {
         // Flicker Heartbeat LED to indicate fault
-        for (Delay1 = 0; Delay1 < 1000; Delay1++)
+        for (delay = 0; delay < 10000; delay++)
         {
             ;
         }
