@@ -97,30 +97,7 @@ void SCH_Init_Milliseconds(const uint32_t TICKms)
         SCH_tasks_g[Task_id].pTask = SCH_NULL_PTR;
     }
 
-#if 0
-    // Using CMSIS
-
-    // SystemCoreClock gives the system operating frequency (in Hz)
-    if (SystemCoreClock != REQUIRED_PROCESSOR_CORE_CLOCK)
-    {
-        // Fatal error
-        PROCESSOR_Perform_Safe_Shutdown();
-    }
-
-   // Now to set up SysTick timer for "ticks" at interval TICKms
-   if (SysTick_Config(TICKms * SystemCoreClock / 1000))
-      {
-      // Fatal error
-      PROCESSOR_Perform_Safe_Shutdown();
-      }
-
-   // Timer is started by SysTick_Config():
-   // we need to disable SysTick timer and SysTick interrupt until
-   // all tasks have been added to the schedule.
-   SysTick->CTRL &= 0xFFFFFFFC;
-#else
     timer_init(TICKms);
-#endif
 }
 
 /*----------------------------------------------------------------------------*-
@@ -157,18 +134,8 @@ void SCH_Init_Milliseconds(const uint32_t TICKms)
 -*----------------------------------------------------------------------------*/
 void SCH_Start(void)
 {
-#if 0
-    // Enable SysTick timer
-    SysTick->CTRL |= 0x01;
-
-    // Enable SysTick interrupt
-    SysTick->CTRL |= 0x02;
-#else
     timer_interrupt_enable();
     timer_start();
-
-//    int_enable();
-#endif
 }
 
 /*----------------------------------------------------------------------------*-
