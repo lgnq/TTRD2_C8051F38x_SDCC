@@ -119,7 +119,7 @@ void SCH_Init_Milliseconds(const uint32_t TICKms)
    // all tasks have been added to the schedule.
    SysTick->CTRL &= 0xFFFFFFFC;
 #else
-    timer_init(1);
+    timer_init(TICKms);
 #endif
 }
 
