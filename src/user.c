@@ -52,10 +52,16 @@ void timer_init(uint32_t tick)
     CKCON &= ~0x60;               // Timer2 clocked based on T2XCLK;
 
     // Init reload values
+#if 0
     TMR2RL = -(SYSCLK / 12 / 1000);
+    TMR2   = 0xffff;                // Set to reload immediately
+#else
+    TMR2RLL = 0x60;
+    TMR2RLH = 0xF0;
 
-    TMR2 = 0xffff;                // Set to reload immediately
-
+    TMR2L   = 0xFF;
+    TMR2H   = 0xFF;
+#endif
     // Not yet started timer
 }
 
@@ -133,3 +139,4 @@ void _sdcc_external_startup(void)
 {
     PCA0MD &= ~0x40;    //disable watchdog
 }
+
