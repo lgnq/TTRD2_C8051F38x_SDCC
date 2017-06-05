@@ -33,7 +33,12 @@ void system_clock_init(uint32_t freq)
     delay();                            // Delay for clock multiplier to begin
 
     while (!(CLKMUL & 0x20));           // Wait for multiplier to lock
+
+#if SYSCLK == 48000000
     CLKSEL  = 0x03;                     // Select system clock from internal High-Frequency Osc = 48MHz
+#elif SYSCLK == 24000000
+    CLKSEL  = 0x02;                     // Select system clock from internal High-Frequency Osc = 24MHz
+#endif
 }
 
 void timer_init(uint32_t tick)
@@ -48,6 +53,7 @@ void timer_init(uint32_t tick)
 
     // Init reload values
     TMR2RL = -(SYSCLK / 12 / 1000);
+
     TMR2 = 0xffff;                // Set to reload immediately
 
     // Not yet started timer
@@ -55,6 +61,7 @@ void timer_init(uint32_t tick)
 
 void timer_start(void)
 {
+    TF2H = 0;    // Clear Timer2 flag (just in case)
     TR2 = 1;
 }
 
