@@ -104,31 +104,36 @@ void UART2_BUF_O_Send_Char(const char);
 -*----------------------------------------------------------------------------*/
 void UART2_BUF_O_Init(uint32_t BAUD_RATE)
 {
+    Out_written_index_g = 0;
+    Out_waiting_index_g = 0;
+    In_read_index_g     = 0;
+    In_waiting_index_g  = 0;
+
     SCON0 = 0x10;                       // SCON0: 8-bit variable bit rate
                                         //        level of STOP bit is ignored
                                         //        RX enabled
                                         //        ninth bits are zeros
                                         //        clear RI0 and TI0 bits
-    if (SYSCLK/BAUD_RATE/2/256 < 1)
+    if (SYSCLK/BAUD_RATE0/2/256 < 1)
     {
-        TH1    = -(SYSCLK/BAUD_RATE/2);
+        TH1    = -(SYSCLK/BAUD_RATE0/2);
         CKCON &= ~0x0B;                  // T1M = 1; SCA1:0 = xx
         CKCON |=  0x08;
     }
-    else if (SYSCLK/BAUD_RATE/2/256 < 4)
+    else if (SYSCLK/BAUD_RATE0/2/256 < 4)
     {
-        TH1    = -(SYSCLK/BAUD_RATE/2/4);
+        TH1    = -(SYSCLK/BAUD_RATE0/2/4);
         CKCON &= ~0x0B;                  // T1M = 0; SCA1:0 = 01
         CKCON |=  0x01;
     }
-    else if (SYSCLK/BAUD_RATE/2/256 < 12)
+    else if (SYSCLK/BAUD_RATE0/2/256 < 12)
     {
-        TH1    = -(SYSCLK/BAUD_RATE/2/12);
+        TH1    = -(SYSCLK/BAUD_RATE0/2/12);
         CKCON &= ~0x0B;                  // T1M = 0; SCA1:0 = 00
     }
     else
     {
-        TH1    = -(SYSCLK/BAUD_RATE/2/48);
+        TH1    = -(SYSCLK/BAUD_RATE0/2/48);
         CKCON &= ~0x0B;                  // T1M = 0; SCA1:0 = 10
         CKCON |=  0x02;
     }
@@ -137,12 +142,11 @@ void UART2_BUF_O_Init(uint32_t BAUD_RATE)
     TMOD &= ~0xf0;                       // TMOD: timer 1 in 8-bit autoreload
     TMOD |=  0x20;
     TR1   = 1;                           // START Timer1
-    ES0   = 0;                           // Enable UART0 interrupts
+    ES0   = 0;                           // Disable UART0 interrupts
 
-    Out_written_index_g = 0;
-    Out_waiting_index_g = 0;
-    In_read_index_g     = 0;
-    In_waiting_index_g  = 0;   
+    //init UART pins
+    P0SKIP = 0xCF;                       // GPIO, GPIO, TX, RX, GPIO...
+    XBR0   = 0x01;                       // .... ...(UART0)
 }
 
 /*----------------------------------------------------------------------------*-
@@ -548,14 +552,12 @@ void UART2_BUF_O_Write_Number02_To_Buffer(const uint32_t DATA)
 -*----------------------------------------------------------------------------*/
 void UART2_BUF_O_Send_Char(const char CHARACTER)
 {
-#if 0
-    // Wait for USART to be free
-    // Requires a 'peripheral timeout' mechanism (see ERES2, Chapter 5)
-    while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == 0);
+    SBUF0 = CHARACTER;
 
-    USART_SendData(USART2, CHARACTER);
-#else
-#endif
+    while (!TI0)
+        ;
+
+    TI0 = 0;
 }
 
 void protocol_processor(uint8_t c)
