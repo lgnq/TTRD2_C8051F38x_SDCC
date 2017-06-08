@@ -22,4 +22,6 @@ void mcu_init(void);
 
 void tasks_init(void);
 
+INTERRUPT(SCH_UPDATE, INTERRUPT_TIMER2);
+
 #endif
