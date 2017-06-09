@@ -43,12 +43,6 @@
 
 #include "main.h"
 
-// Requires switch (Button 1) interface
-//#include "ttrd2-02a-t0401a-v001a_switch_task.h"
-
-// Requires UART interface
-//#include "ttrd2-03a-t0401a-v001a_uart2_buff_o_task.h"
-
 /*----------------------------------------------------------------------------*-
 
   HEARTBEAT_SW_U_Init()

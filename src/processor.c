@@ -174,7 +174,7 @@ void PROCESSOR_Configure_Reqd_MoSt(void)
             UART2_BUF_O_Send_All_Data();
 
             // Reset caused by iWDT
-            // Trigger "fail safe" behaviour
+            // Trigger "fail safe" behavior
             PROCESSOR_Perform_Safe_Shutdown();
 
             break;

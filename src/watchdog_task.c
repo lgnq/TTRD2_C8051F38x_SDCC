@@ -81,26 +81,6 @@
 -*----------------------------------------------------------------------------*/
 void WATCHDOG_Init(const uint32_t WDT_COUNT)
 {
-    // Even though the LFOSC is disabled after a reset and the register reads
-    // disabled, the oscillator is automatically enabled whenever it's used by
-    // the WDT. This means we do not need to enable it here.
-
-    // WDT interval given by:
-    //
-    // 4 ^ (3 + WDTCN[2:0]) * TLFOSC
-    //
-    // The LFOSC is running at 80 kHz
-    //
-    // We want a timeout of approximately 10 ms.
-    //
-    // 4 ^ (3 + 2) * 12.5 us = 12.8 ms
-
-    // WDTCN.7 must be cleared to 0 to write the timeout interval
-    ///WDTCN = 0x02;
-
-    // Enable and feed the watchdog
-    ///WDTCN = 0xA5;
-
     /*
     To configure the WDT, perform the following tasks:
     1. Disable the WDT by writing a 0 to the WDTE bit.
