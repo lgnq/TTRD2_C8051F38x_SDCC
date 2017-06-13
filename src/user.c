@@ -88,7 +88,8 @@ void int_disable(void)
 
 void sleep(void)
 {
-
+    PCON |= 0x01;
+    PCON  = PCON;
 }
 
 void mcu_init(void)
