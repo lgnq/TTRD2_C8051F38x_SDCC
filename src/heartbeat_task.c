@@ -43,6 +43,8 @@
 
 #include "main.h"
 
+uint8_t reset_heartbeat_flag = 0;
+
 /*----------------------------------------------------------------------------*-
 
   HEARTBEAT_SW_U_Init()
@@ -140,7 +142,8 @@ void HEARTBEAT_SW_U_Update1(void)
     }
 
     // Only flash the LED if the switch is *not* pressed
-    if (SWITCH_BUTTON1_Get_State() == BUTTON1_NOT_PRESSED)
+    //if (SWITCH_BUTTON1_Get_State() == BUTTON1_NOT_PRESSED)
+    if (reset_heartbeat_flag == 0)
     {
         // Change the LED from OFF to ON (or vice versa)
         if (Heartbeat_state_s == 1)
@@ -164,6 +167,7 @@ void HEARTBEAT_SW_U_Update1(void)
     {
         UART2_BUF_O_Write_String_To_Buffer("SWITCH PRESSED ...\n");
         Countdown_s = 10;
+        reset_heartbeat_flag = 0;
     }
 }
 

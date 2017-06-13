@@ -44,6 +44,8 @@
 
 #include "main.h"
 
+extern uint8_t reset_heartbeat_flag;
+
 SBIT(LED_R, SFR_P0, 0);
 SBIT(LED_G, SFR_P0, 1);
 

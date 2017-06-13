@@ -148,6 +148,7 @@ void SWITCH_BUTTON1_Update(void)
             Duration_s = SW_THRES;
 
             Switch_button1_pressed_g = BUTTON1_PRESSED;
+            reset_heartbeat_flag = 1;
         }
         else
         {
