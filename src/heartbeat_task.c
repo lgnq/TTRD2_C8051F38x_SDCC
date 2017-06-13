@@ -142,7 +142,6 @@ void HEARTBEAT_SW_U_Update1(void)
     }
 
     // Only flash the LED if the switch is *not* pressed
-    //if (SWITCH_BUTTON1_Get_State() == BUTTON1_NOT_PRESSED)
     if (reset_heartbeat_flag == 0)
     {
         // Change the LED from OFF to ON (or vice versa)

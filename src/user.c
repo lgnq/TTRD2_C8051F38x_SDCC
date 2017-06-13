@@ -108,7 +108,7 @@ void tasks_init(void)
     WATCHDOG_Init(0xFF);
 
     // Prepare for switch task
-    SWITCH_BUTTON1_Init();
+    key_init();
 
     // Prepare for heartbeat-switch task
     HEARTBEAT_SW_U_Init();
@@ -126,7 +126,7 @@ void tasks_init(void)
     // C. Task period (in Ticks): Must be > 0
     //           A                       B  C
     SCH_Add_Task(WATCHDOG_Update,        0, 1);     // Feed iWDT
-    SCH_Add_Task(SWITCH_BUTTON1_Update,  0, 1);     // Switch interface
+    SCH_Add_Task(key_update,  0, 1);     // Switch interface
     SCH_Add_Task(HEARTBEAT_SW_U_Update1, 0, 1000);  // Heartbeat LED
     SCH_Add_Task(UART2_BUF_O_Update,     0, 1);     // UART-USB reports
     SCH_Add_Task(protocol_update,        0, 10);    // protocol task
