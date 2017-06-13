@@ -114,26 +114,26 @@ void UART2_BUF_O_Init(uint32_t BAUD_RATE)
                                         //        RX enabled
                                         //        ninth bits are zeros
                                         //        clear RI0 and TI0 bits
-    if (SYSCLK/BAUD_RATE0/2/256 < 1)
+    if (SYSCLK/BAUDRATE/2/256 < 1)
     {
-        TH1    = -(SYSCLK/BAUD_RATE0/2);
+        TH1    = -(SYSCLK/BAUDRATE/2);
         CKCON &= ~0x0B;                  // T1M = 1; SCA1:0 = xx
         CKCON |=  0x08;
     }
-    else if (SYSCLK/BAUD_RATE0/2/256 < 4)
+    else if (SYSCLK/BAUDRATE/2/256 < 4)
     {
-        TH1    = -(SYSCLK/BAUD_RATE0/2/4);
+        TH1    = -(SYSCLK/BAUDRATE/2/4);
         CKCON &= ~0x0B;                  // T1M = 0; SCA1:0 = 01
         CKCON |=  0x01;
     }
-    else if (SYSCLK/BAUD_RATE0/2/256 < 12)
+    else if (SYSCLK/BAUDRATE/2/256 < 12)
     {
-        TH1    = -(SYSCLK/BAUD_RATE0/2/12);
+        TH1    = -(SYSCLK/BAUDRATE/2/12);
         CKCON &= ~0x0B;                  // T1M = 0; SCA1:0 = 00
     }
     else
     {
-        TH1    = -(SYSCLK/BAUD_RATE0/2/48);
+        TH1    = -(SYSCLK/BAUDRATE/2/48);
         CKCON &= ~0x0B;                  // T1M = 0; SCA1:0 = 10
         CKCON |=  0x02;
     }

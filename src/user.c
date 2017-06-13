@@ -105,7 +105,7 @@ void tasks_init(void)
     // Timeout is WDT count value: approx 32 per millisecond
     // => a count of 64 gives a timeout of approx 2 ms
     // NOTE: WDT driven by RC oscillator - timing varies with temperature
-    WATCHDOG_Init(60);
+    WATCHDOG_Init(0xFF);
 
     // Prepare for switch task
     SWITCH_BUTTON1_Init();
@@ -114,7 +114,7 @@ void tasks_init(void)
     HEARTBEAT_SW_U_Init();
 
     // Prepare for UART1 task (set baud rate)
-    UART2_BUF_O_Init(115200);
+    UART2_BUF_O_Init(BAUDRATE);
 
     // Report mode (via buffer)
     UART2_BUF_O_Write_String_To_Buffer("\nNormal mode\n");

@@ -58,7 +58,7 @@
   It is suggested that you use twice the required timeout value (approx).
 
   PARAMETERS:
-     WDT_COUNT : Will be multiplied by ~100¦Ìs to determine the timeout.
+     WDT_COUNT : Will be multiplied by ~100Â¦ÃŒs to determine the timeout.
 
   LONG-TERM DATA:
      None.
@@ -84,14 +84,14 @@ void WATCHDOG_Init(const uint32_t WDT_COUNT)
     /*
     To configure the WDT, perform the following tasks:
     1. Disable the WDT by writing a 0 to the WDTE bit.
-    2. Select the desired PCA clock source (with the CPS2–CPS0 bits). default is SYSCLK/12
+    2. Select the desired PCA clock source (with the CPS2â€“CPS0 bits). default is SYSCLK/12
     3. Load PCA0CPL4 with the desired WDT update offset value.
     4. Configure the PCA Idle mode (set CIDL if the WDT should be suspended while the CPU is in Idle mode).
     5. Enable the WDT by setting the WDTE bit to 1.
     6. Reset the WDT timer by writing to PCA0CPH4.
     */
 
-    PCA0CPL4 = 0xFF;
+    PCA0CPL4 = WDT_COUNT;
 
     PCA0MD |= 0x40;						// Enable Watchdog timer, WDTE = 1
 
