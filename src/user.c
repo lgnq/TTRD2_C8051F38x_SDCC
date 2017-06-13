@@ -34,11 +34,18 @@ void system_clock_init(uint32_t freq)
 
     while (!(CLKMUL & 0x20));           // Wait for multiplier to lock
 
-#if SYSCLK == 48000000
-    CLKSEL  = 0x03;                     // Select system clock from internal High-Frequency Osc = 48MHz
-#elif SYSCLK == 24000000
-    CLKSEL  = 0x02;                     // Select system clock from internal High-Frequency Osc = 24MHz
-#endif
+    switch (freq/1000000)
+    {
+    case 48:
+        CLKSEL = 0x03; // Select system clock from internal High-Frequency Osc = 48MHz
+        break;
+    case 24:
+        CLKSEL = 0x02; // Select system clock from internal High-Frequency Osc = 24MHz
+        break;
+    default:
+        CLKSEL = 0x03; // Select system clock from internal High-Frequency Osc = 48MHz
+        break;
+    }
 }
 
 void timer_init(uint32_t tick)
@@ -87,7 +94,7 @@ void sleep(void)
 void mcu_init(void)
 {
     //init system clock
-    system_clock_init(48000000);
+    system_clock_init(SYSCLK);
 
     int_enable();
 }
