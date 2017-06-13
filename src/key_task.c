@@ -57,7 +57,7 @@ unsigned char key_read(void)
                 else
                     key_state = KEY_STATE_0;
 
-                if (key_time >= 1000)
+                if (key_time >= 250)
                 {
                     key_return = key_temp | 0x80;
                     key_state = KEY_STATE_3;
