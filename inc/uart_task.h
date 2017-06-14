@@ -45,6 +45,19 @@
 // Processor Header
 #include "main.h"
 
+#define MAX_LENGTH  100
+
+#define START_BYTE  0x55
+#define END_BYTE    0x56
+
+#define STATE_IDLE      0
+#define STATE_START_OK  1
+#define STATE_LEN_OK    2
+#define STATE_CMD_OK    3
+#define STATE_DAT_OK    4
+#define STATE_CRC_OK    5
+#define STATE_END_OK    6
+
 // ------ Public function prototypes -----------------------------------------
 
 void UART2_BUF_O_Init(uint32_t BAUD_RATE);

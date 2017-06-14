@@ -588,14 +588,63 @@ void protocol_processor(uint8_t c)
     }
 }
 
+uint8_t state = STATE_IDLE;
+uint8_t length = 0;
+uint8_t cmd = 0;
+uint8_t crc = 0;
+
 void protocol_update(void)
 {
     uint8_t c;
+    uint8_t i;
 
     c = uart_read_char_from_buffer();
     if (c != PC_LINK_NO_CHAR)
     {
-        protocol_processor(c);
+        //protocol_processor(c);
+        switch (state)
+        {
+        case STATE_IDLE:
+            if (c == START_BYTE)
+                state = STATE_START_OK;
+            break;
+        case STATE_START_OK:
+            if (c > MAX_LENGTH)
+                state = STATE_IDLE;
+            else
+                length = c;
+                state = STATE_LEN_OK;
+            break;
+        case STATE_LEN_OK:
+            cmd = c;
+            state = STATE_CMD_OK;
+            break;
+        case STATE_CMD_OK:
+            for (i = 0; i < length - 5; i++)
+                UART2_BUF_O_Write_Char_To_Buffer(c);
+            state = STATE_DAT_OK;
+            break;
+        case STATE_DAT_OK:
+            crc = c;
+
+            //if CRC OK
+                state = STATE_CRC_OK;
+            //else
+            //    state = STATE_IDLE;
+            break;
+        case STATE_CRC_OK:
+            if (c == END_BYTE)
+                state = STATE_END_OK;
+            else
+                state = STATE_IDLE;
+            break;
+        case STATE_END_OK:
+            UART2_BUF_O_Write_String_To_Buffer("package is ok\r\n");
+            state = STATE_IDLE;
+            break;
+        default:
+            break;
+        }
     }
 }
 
