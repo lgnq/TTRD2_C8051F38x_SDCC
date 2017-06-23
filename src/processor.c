@@ -169,7 +169,7 @@ void PROCESSOR_Configure_Reqd_MoSt(void)
         case FAIL_SAFE_S:
         {
             // Configure UART1 (set baud rate)
-            UART2_BUF_O_Init(115200);
+            UART2_BUF_O_Init(BAUDRATE);
             UART2_BUF_O_Write_String_To_Buffer("\nFail-Safe State\n");
             UART2_BUF_O_Send_All_Data();
 
@@ -185,7 +185,7 @@ void PROCESSOR_Configure_Reqd_MoSt(void)
             mcu_init();
 
             // Set up the scheduler for 1 ms ticks
-            SCH_Init_Milliseconds(1);
+            SCH_Init_Milliseconds(500);
 
             tasks_init();
 

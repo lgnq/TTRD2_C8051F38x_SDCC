@@ -59,7 +59,7 @@ void timer_init(uint32_t tick)
     CKCON &= ~0x60;               // Timer2 clocked based on T2XCLK;
 
     // Init reload values
-    TMR2RL = -(SYSCLK / 12 / 1000 / tick);
+    TMR2RL = -(SYSCLK / 12 / 1000000 * tick);
     TMR2   = 0xffff;                // Set to reload immediately
 
     // Not yet started timer
