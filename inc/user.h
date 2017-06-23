@@ -5,7 +5,7 @@
 
 // SYSCLK frequency in Hz
 #define SYSCLK (48000000)
-#define BAUDRATE (115200)
+#define BAUDRATE (38400)
 
 void system_clock_init(uint32_t freq);
 

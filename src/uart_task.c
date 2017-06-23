@@ -219,6 +219,7 @@ void UART2_BUF_O_Update(void)
 
         // Read the data from USART buffer
         Rx_buffer_g[In_waiting_index_g] = SBUF0;
+        UART2_BUF_O_Write_Char_To_Buffer(Rx_buffer_g[In_waiting_index_g]);
 
         if (In_waiting_index_g < Rx_buffer_g_SIZE_BYTES)
         {
@@ -689,8 +690,6 @@ void protocol_update(void)
 
     if (c != PC_LINK_NO_CHAR)
     {
-        UART2_BUF_O_Write_Char_To_Buffer(c);
-
         switch (state)
         {
         case WAIT_FOR_SOF1:
