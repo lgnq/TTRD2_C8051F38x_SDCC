@@ -142,7 +142,7 @@ void UART2_BUF_O_Init(uint32_t BAUD_RATE)
     TMOD &= ~0xf0;                       // TMOD: timer 1 in 8-bit autoreload
     TMOD |=  0x20;
     TR1   = 1;                           // START Timer1
-    ES0   = 0;                           // Disable UART0 interrupts
+    ES0   = 1;                           // Disable UART0 interrupts
 
     //init UART pins
     P0SKIP = 0xCF;                       // GPIO, GPIO, TX, RX, GPIO...
@@ -204,7 +204,7 @@ void UART2_BUF_O_Update(void)
         Out_waiting_index_g = 0;
         Out_written_index_g = 0;
     }
-
+#if 0
     if (RI0 == 1)
     {
         // Flag only set when a valid stop bit is received,
@@ -229,6 +229,7 @@ void UART2_BUF_O_Update(void)
         //todo : clear the RX flag
         RI0 = 0;
     }
+#endif
 }
 
 /*----------------------------------------------------------------------------*-
@@ -875,6 +876,36 @@ void protocol_update(void)
     }
 }
 #endif
+
+INTERRUPT(UART_UPDATE, INTERRUPT_UART0)
+{
+    if (RI0 == 1)
+    {
+        // Flag only set when a valid stop bit is received,
+        // -> data ready to be read into the received buffer
+        // Want to read into index 0, if old data have been read
+        // (simple ~circular buffer)
+        if (In_waiting_index_g == In_read_index_g)
+        {
+            In_waiting_index_g = 0;
+            In_read_index_g = 0;
+        }
+
+        // Read the data from USART buffer
+        Rx_buffer_g[In_waiting_index_g] = SBUF0;
+        UART2_BUF_O_Write_Char_To_Buffer(Rx_buffer_g[In_waiting_index_g]);
+
+        if (In_waiting_index_g < Rx_buffer_g_SIZE_BYTES)
+        {
+            In_waiting_index_g++;
+        }
+
+        //todo : clear the RX flag
+        RI0 = 0;
+    }
+
+    WATCHDOG_Update();
+}
 
 /*----------------------------------------------------------------------------*-
   ------------------------------ END OF FILE ---------------------------------

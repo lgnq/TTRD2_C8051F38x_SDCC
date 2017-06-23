@@ -125,6 +125,8 @@ void UART2_BUF_O_Write_Number02_To_Buffer(const uint32_t DATA);
 
 void protocol_update(void);
 
+INTERRUPT(UART_UPDATE, INTERRUPT_UART0);
+
 #endif
 
 /*----------------------------------------------------------------------------*-

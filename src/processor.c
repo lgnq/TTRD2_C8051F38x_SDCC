@@ -185,7 +185,7 @@ void PROCESSOR_Configure_Reqd_MoSt(void)
             mcu_init();
 
             // Set up the scheduler for 1 ms ticks
-            SCH_Init_Milliseconds(500);
+            SCH_Init_Milliseconds(1000);
 
             tasks_init();
 
