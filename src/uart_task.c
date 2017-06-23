@@ -589,6 +589,7 @@ void protocol_processor(uint8_t c)
 }
 
 uint8_t state = STATE_IDLE;
+#if 0
 uint8_t length = 0;
 uint8_t cmd = 0;
 uint8_t crc = 0;
@@ -647,6 +648,234 @@ void protocol_update(void)
         }
     }
 }
+#else
+
+uint8_t cmd = CMD_NONE;
+uint8_t pgn[5] =
+{
+    0,
+    0,
+    0,
+    0,
+    0
+};
+
+uint8_t src[3] =
+{
+    0,
+    0,
+    0,
+};
+
+uint8_t dst[3] =
+{
+    0,
+    0,
+    0,
+};
+
+uint8_t timestamp[14];
+
+uint8_t idx = 0;
+uint8_t priority = 0;
+
+uint8_t buff[50];
+
+void protocol_update(void)
+{
+    uint8_t c;
+
+    c = uart_read_char_from_buffer();
+
+    if (c != PC_LINK_NO_CHAR)
+    {
+        UART2_BUF_O_Write_Char_To_Buffer(c);
+
+        switch (state)
+        {
+        case WAIT_FOR_SOF1:
+            if (c == 'A')
+                state = WAIT_FOR_SOF2;
+            break;
+        case WAIT_FOR_SOF2:
+            if (c == 'T')
+                state = WAIT_FOR_SOF3;
+            else
+                state = WAIT_FOR_SOF1;
+            break;
+        case WAIT_FOR_SOF3:
+            if (c == '+')
+                state = WAIT_FOR_SOF4;
+            else
+                state = WAIT_FOR_SOF1;
+            break;
+        case WAIT_FOR_SOF4:
+            if (c == 'B')
+                state = WAIT_FOR_SOF5;
+            else
+                state = WAIT_FOR_SOF1;
+            break;
+        case WAIT_FOR_SOF5:
+            if (c == 'T')
+                state = WAIT_FOR_SOF6;
+            else
+                state = WAIT_FOR_SOF1;
+            break;
+        case WAIT_FOR_SOF6:
+            if (c == 'C')
+            {
+                cmd = CMD_BTCAR;
+                state = WAIT_FOR_SOF7;
+            }
+            else if (c == 'F')
+            {
+                cmd = CMD_BTFRT;
+                state = WAIT_FOR_SOF7;
+            }
+            else if (c == 'S')
+            {
+                cmd = CMD_BTSEC;
+                state = WAIT_FOR_SOF7;
+            }
+            else
+            {
+                cmd = CMD_NONE;
+                state = WAIT_FOR_SOF1;
+            }
+            break;
+        case WAIT_FOR_SOF7:
+            if (cmd == CMD_BTCAR)
+            {
+                if (c == 'A')
+                    state = WAIT_FOR_SOF8;
+                else
+                {
+                    cmd = CMD_NONE;
+                    state = WAIT_FOR_SOF1;
+                }
+            }
+            else if(cmd == CMD_BTFRT)
+            {
+                if (c == 'R')
+                    state = WAIT_FOR_SOF8;
+                else
+                {
+                    cmd = CMD_NONE;
+                    state = WAIT_FOR_SOF1;
+                }
+            }
+            else if(cmd == CMD_BTSEC)
+            {
+                if (c == 'E')
+                    state = WAIT_FOR_SOF8;
+                else
+                {
+                    cmd = CMD_NONE;
+                    state = WAIT_FOR_SOF1;
+                }
+            }
+            break;
+        case WAIT_FOR_SOF8:
+            if (cmd == CMD_BTCAR)
+            {
+                if (c == 'R')
+                    state = WAIT_FOR_SOF9;
+                else
+                {
+                    cmd = CMD_NONE;
+                    state = WAIT_FOR_SOF1;
+                }
+            }
+            else if(cmd == CMD_BTFRT)
+            {
+                if (c == 'T')
+                    state = WAIT_FOR_SOF9;
+                else
+                {
+                    cmd = CMD_NONE;
+                    state = WAIT_FOR_SOF1;
+                }
+            }
+            else if(cmd == CMD_BTSEC)
+            {
+                if (c == 'C')
+                    state = WAIT_FOR_SOF9;
+                else
+                {
+                    cmd = CMD_NONE;
+                    state = WAIT_FOR_SOF1;
+                }
+            }
+            break;
+        case WAIT_FOR_SOF9:
+            if (c == '=')
+            {
+                idx = 0;
+                state = WAIT_FOR_PGN;
+            }
+            else
+                state = WAIT_FOR_SOF1;
+            break;
+        case WAIT_FOR_PGN:
+            if (c != ',')
+            {
+                pgn[idx++] = c;
+            }
+            else
+            {
+                idx = 0;
+                state = WAIT_FOR_SRC;
+            }
+            break;
+        case WAIT_FOR_SRC:
+            if (c != ',')
+            {
+                src[idx++] = c;
+            }
+            else
+            {
+                idx = 0;
+                state = WAIT_FOR_DST;
+            }
+            break;
+        case WAIT_FOR_DST:
+            if (c != ',')
+            {
+                dst[idx++] = c;
+            }
+            else
+            {
+                state = WAIT_FOR_PRI;
+            }
+            break;
+        case WAIT_FOR_PRI:
+            idx = 0;
+            priority = c;
+            state = WAIT_FOR_DATA;
+            break;
+        case WAIT_FOR_DATA:
+            if (c == '#')
+            {
+                state = WAIT_FOR_SOF1;
+
+                UART2_BUF_O_Write_String_To_Buffer("Process data now!\n");
+
+                //process data
+            }
+            else
+            {
+                buff[idx++] = c;
+            }
+
+            //if (timeout)
+            //    state = WAIT_FOR_SOF1;
+            break;
+        default:
+            break;
+        }
+    }
+}
+#endif
 
 /*----------------------------------------------------------------------------*-
   ------------------------------ END OF FILE ---------------------------------
