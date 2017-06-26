@@ -56,19 +56,19 @@
 #define XOFF 0x13
 
 // The transmit buffer length
-#define Tx_buffer_g_SIZE_BYTES 200
+#define TX_BUFFER_SIZE 200
 // The receive buffer length
-#define Rx_buffer_g_SIZE_BYTES 200
+#define RX_BUFFER_SIZE 200
 
 // ------ Private variables --------------------------------------------------
 
-static char Tx_buffer_g[Tx_buffer_g_SIZE_BYTES];
-static char Rx_buffer_g[Rx_buffer_g_SIZE_BYTES];
+static char tx_buffer[TX_BUFFER_SIZE];
+static char rx_buffer[RX_BUFFER_SIZE];
 
-static uint32_t Out_written_index_g;  // Data in buffer that has been written
-static uint32_t Out_waiting_index_g;  // Data in buffer not yet written
-static uint32_t In_read_index_g;      // Data in buffer that has been received
-static uint32_t In_waiting_index_g;   // Data in buffer not yet received
+static uint32_t tx_buffer_out_idx;  // Data in buffer that has been written
+static uint32_t tx_buffer_in_idx;  // Data in buffer not yet written
+static uint32_t rx_buffer_out_idx;      // Data in buffer that has been received
+static uint32_t rx_buffer_in_idx;   // Data in buffer not yet received
 
 // ------ Private function prototypes ----------------------------------------
 
@@ -104,10 +104,10 @@ void UART2_BUF_O_Send_Char(const char);
 -*----------------------------------------------------------------------------*/
 void UART2_BUF_O_Init(uint32_t BAUD_RATE)
 {
-    Out_written_index_g = 0;
-    Out_waiting_index_g = 0;
-    In_read_index_g     = 0;
-    In_waiting_index_g  = 0;
+    tx_buffer_out_idx = 0;
+    tx_buffer_in_idx = 0;
+    rx_buffer_out_idx     = 0;
+    rx_buffer_in_idx  = 0;
 
     SCON0 = 0x10;                       // SCON0: 8-bit variable bit rate
                                         //        level of STOP bit is ignored
@@ -192,17 +192,17 @@ void UART2_BUF_O_Update(void)
     // Deal with transmit bytes here
 
     // Is there any data ready to send?
-    if (Out_written_index_g < Out_waiting_index_g)
+    if (tx_buffer_out_idx < tx_buffer_in_idx)
     {
-        UART2_BUF_O_Send_Char(Tx_buffer_g[Out_written_index_g]);
+        UART2_BUF_O_Send_Char(tx_buffer[tx_buffer_out_idx]);
 
-        Out_written_index_g++;
+        tx_buffer_out_idx++;
     }
     else
     {
         // No data to send - just reset the buffer index
-        Out_waiting_index_g = 0;
-        Out_written_index_g = 0;
+        tx_buffer_in_idx = 0;
+        tx_buffer_out_idx = 0;
     }
 #if 0
     if (RI0 == 1)
@@ -211,19 +211,19 @@ void UART2_BUF_O_Update(void)
         // -> data ready to be read into the received buffer
         // Want to read into index 0, if old data have been read
         // (simple ~circular buffer)
-        if (In_waiting_index_g == In_read_index_g)
+        if (rx_buffer_in_idx == rx_buffer_out_idx)
         {
-            In_waiting_index_g = 0;
-            In_read_index_g = 0;
+            rx_buffer_in_idx = 0;
+            rx_buffer_out_idx = 0;
         }
 
         // Read the data from USART buffer
-        Rx_buffer_g[In_waiting_index_g] = SBUF0;
-        UART2_BUF_O_Write_Char_To_Buffer(Rx_buffer_g[In_waiting_index_g]);
+        rx_buffer[rx_buffer_in_idx] = SBUF0;
+        UART2_BUF_O_Write_Char_To_Buffer(rx_buffer[rx_buffer_in_idx]);
 
-        if (In_waiting_index_g < Rx_buffer_g_SIZE_BYTES)
+        if (rx_buffer_in_idx < RX_BUFFER_SIZE)
         {
-            In_waiting_index_g++;
+            rx_buffer_in_idx++;
         }
 
         //todo : clear the RX flag
@@ -266,16 +266,16 @@ void UART2_BUF_O_Update(void)
 -*----------------------------------------------------------------------------*/
 void UART2_BUF_O_Send_All_Data(void)
 {
-    while (Out_written_index_g < Out_waiting_index_g)
+    while (tx_buffer_out_idx < tx_buffer_in_idx)
     {
-        UART2_BUF_O_Send_Char(Tx_buffer_g[Out_written_index_g]);
+        UART2_BUF_O_Send_Char(tx_buffer[tx_buffer_out_idx]);
 
-        Out_written_index_g++;
+        tx_buffer_out_idx++;
     }
 
     // Reset the buffer indices
-    Out_waiting_index_g = 0;
-    Out_written_index_g = 0;
+    tx_buffer_in_idx = 0;
+    tx_buffer_out_idx = 0;
 }
 
 /*----------------------------------------------------------------------------*-
@@ -348,10 +348,10 @@ void UART2_BUF_O_Write_String_To_Buffer(const char* const STR_PTR)
 void UART2_BUF_O_Write_Char_To_Buffer(const char CHARACTER)
 {
     // Write to the buffer *only* if there is space
-    if (Out_waiting_index_g < Tx_buffer_g_SIZE_BYTES)
+    if (tx_buffer_in_idx < TX_BUFFER_SIZE)
     {
-        Tx_buffer_g[Out_waiting_index_g] = CHARACTER;
-        Out_waiting_index_g++;
+        tx_buffer[tx_buffer_in_idx] = CHARACTER;
+        tx_buffer_in_idx++;
     }
     else
     {
@@ -365,15 +365,19 @@ uint8_t uart_read_char_from_buffer(void)
 {
     uint8_t c = PC_LINK_NO_CHAR;
 
+    int_disable();
+
     // If there is new data in the buffer
-    if (In_read_index_g < In_waiting_index_g)
+    if (rx_buffer_out_idx < rx_buffer_in_idx)
     {
-        c = Rx_buffer_g[In_read_index_g];
-        if (In_read_index_g < Rx_buffer_g_SIZE_BYTES)
+        c = rx_buffer[rx_buffer_out_idx];
+        if (rx_buffer_out_idx < RX_BUFFER_SIZE)
         {
-            In_read_index_g++;
+            rx_buffer_out_idx++;
         }
     }
+
+    int_enable();
 
     return c;
 }
@@ -885,26 +889,24 @@ INTERRUPT(UART_UPDATE, INTERRUPT_UART0)
         // -> data ready to be read into the received buffer
         // Want to read into index 0, if old data have been read
         // (simple ~circular buffer)
-        if (In_waiting_index_g == In_read_index_g)
+        if (rx_buffer_in_idx == rx_buffer_out_idx)
         {
-            In_waiting_index_g = 0;
-            In_read_index_g = 0;
+            rx_buffer_in_idx = 0;
+            rx_buffer_out_idx = 0;
         }
 
         // Read the data from USART buffer
-        Rx_buffer_g[In_waiting_index_g] = SBUF0;
-        UART2_BUF_O_Write_Char_To_Buffer(Rx_buffer_g[In_waiting_index_g]);
+        rx_buffer[rx_buffer_in_idx] = SBUF0;
+        UART2_BUF_O_Write_Char_To_Buffer(rx_buffer[rx_buffer_in_idx]);
 
-        if (In_waiting_index_g < Rx_buffer_g_SIZE_BYTES)
+        if (rx_buffer_in_idx < RX_BUFFER_SIZE)
         {
-            In_waiting_index_g++;
+            rx_buffer_in_idx++;
         }
 
         //todo : clear the RX flag
         RI0 = 0;
     }
-
-    WATCHDOG_Update();
 }
 
 /*----------------------------------------------------------------------------*-
