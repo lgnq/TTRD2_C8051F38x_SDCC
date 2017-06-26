@@ -130,7 +130,7 @@ void tasks_init(void)
     SCH_Add_Task(key_update,             0, 1);     // Switch interface
     SCH_Add_Task(HEARTBEAT_SW_U_Update2, 0, 1000);  // Heartbeat LED
     SCH_Add_Task(UART2_BUF_O_Update,     0, 1);     // UART-USB reports
-    SCH_Add_Task(protocol_update,        0, 10);    // protocol task
+    SCH_Add_Task(protocol_update,        0, 1);    // protocol task
 }
 
 //SDCC for C8051F38x
